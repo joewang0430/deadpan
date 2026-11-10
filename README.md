@@ -116,5 +116,6 @@ uv run python scripts/chat.py --persona
 
 ## License
 
-Code: to be decided. Prompts come from oasst2 (Apache-2.0); the base model
-Qwen3-4B-Instruct-2507 is Apache-2.0.
+Code: [Apache-2.0](LICENSE). Prompts come from oasst2 (Apache-2.0); the base model
+Qwen3-4B-Instruct-2507 is Apache-2.0; the IFEval checkers in `src/persona_lora/ifeval/` are
+vendored from Google Research via EleutherAI's lm-evaluation-harness (Apache-2.0).
