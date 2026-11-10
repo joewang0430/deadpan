@@ -1,0 +1,117 @@
+root@1bad3500c68c:/workspace# nohup python train_lora.py > train.log 2>&1 &
+[1] 1541
+root@1bad3500c68c:/workspace# tail -f train.log
+nohup: ignoring input
+GPU: NVIDIA H100 NVL
+train.jsonl: 2004 conversations (0 dropped as longer than 4096 tokens), 693649 tokens, 575854 trained tokens
+val.jsonl: 106 conversations (0 dropped as longer than 4096 tokens), 36117 tokens, 30224 trained tokens
+Loading checkpoint shards: 100%|██████████| 3/3 [00:00<00:00, 88.73it/s]
+trainable params: 33,030,144 || all params: 4,055,498,240 || trainable%: 0.8145
+  0%|          | 0/252 [00:00<?, ?it/s]`use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`.
+{'loss': 2.7642, 'grad_norm': 2.192779779434204, 'learning_rate': 0.0001, 'epoch': 0.04}
+{'loss': 2.0375, 'grad_norm': 0.561138391494751, 'learning_rate': 0.00019999171134434877, 'epoch': 0.08}
+{'loss': 1.8466, 'grad_norm': 0.5746349692344666, 'learning_rate': 0.00019970175264485266, 'epoch': 0.12}
+{'loss': 1.8221, 'grad_norm': 0.4948348104953766, 'learning_rate': 0.00019899873417553382, 'epoch': 0.16}
+{'loss': 1.7772, 'grad_norm': 0.570986807346344, 'learning_rate': 0.0001978855685095358, 'epoch': 0.2}
+{'eval_loss': 1.6620270013809204, 'eval_runtime': 4.872, 'eval_samples_per_second': 21.757, 'eval_steps_per_second': 5.542, 'epoch': 0.2}
+{'loss': 1.746, 'grad_norm': 0.5210928916931152, 'learning_rate': 0.0001963668674409502, 'epoch': 0.24}
+{'loss': 1.5838, 'grad_norm': 0.36927852034568787, 'learning_rate': 0.00019444892287836613, 'epoch': 0.28}
+{'loss': 1.7277, 'grad_norm': 0.4296242892742157, 'learning_rate': 0.0001921396807777828, 'epoch': 0.32}
+{'loss': 1.5726, 'grad_norm': 0.4058016538619995, 'learning_rate': 0.00018944870822287956, 'epoch': 0.36}
+{'loss': 1.7127, 'grad_norm': 0.6006463766098022, 'learning_rate': 0.00018638715378902886, 'epoch': 0.4}
+{'eval_loss': 1.602799654006958, 'eval_runtime': 4.7663, 'eval_samples_per_second': 22.239, 'eval_steps_per_second': 5.665, 'epoch': 0.4}
+{'loss': 1.5323, 'grad_norm': 0.46407371759414673, 'learning_rate': 0.0001829677013552619, 'epoch': 0.44}
+{'loss': 1.6779, 'grad_norm': 0.372482031583786, 'learning_rate': 0.0001792045175555419, 'epoch': 0.48}
+{'loss': 1.6428, 'grad_norm': 0.5173355937004089, 'learning_rate': 0.00017511319308705198, 'epoch': 0.52}
+{'loss': 1.5212, 'grad_norm': 0.2961934208869934, 'learning_rate': 0.00017071067811865476, 'epoch': 0.56}
+{'loss': 1.6052, 'grad_norm': 0.3583165407180786, 'learning_rate': 0.00016601521206712318, 'epoch': 0.6}
+{'eval_loss': 1.5858972072601318, 'eval_runtime': 4.6613, 'eval_samples_per_second': 22.74, 'eval_steps_per_second': 5.792, 'epoch': 0.6}
+{'loss': 1.5908, 'grad_norm': 0.3464195132255554, 'learning_rate': 0.00016104624803207695, 'epoch': 0.64}
+{'loss': 1.6654, 'grad_norm': 0.47487279772758484, 'learning_rate': 0.00015582437220268647, 'epoch': 0.68}
+{'loss': 1.7468, 'grad_norm': 0.43378376960754395, 'learning_rate': 0.00015037121857003937, 'epoch': 0.72}
+{'loss': 1.6627, 'grad_norm': 0.3695436716079712, 'learning_rate': 0.0001447093792985114, 'epoch': 0.76}
+{'loss': 1.6478, 'grad_norm': 0.4035499691963196, 'learning_rate': 0.00013886231112747005, 'epoch': 0.8}
+{'eval_loss': 1.571964144706726, 'eval_runtime': 4.7981, 'eval_samples_per_second': 22.092, 'eval_steps_per_second': 5.627, 'epoch': 0.8}
+{'loss': 1.6424, 'grad_norm': 0.5150058269500732, 'learning_rate': 0.0001328542381910835, 'epoch': 0.84}
+{'loss': 1.6083, 'grad_norm': 0.3097447156906128, 'learning_rate': 0.00012671005165884816, 'epoch': 0.88}
+{'loss': 1.5487, 'grad_norm': 0.2902950942516327, 'learning_rate': 0.0001204552066126201, 'epoch': 0.92}
+{'loss': 1.6856, 'grad_norm': 0.3791205883026123, 'learning_rate': 0.0001141156165873826, 'epoch': 0.96}
+{'loss': 1.5301, 'grad_norm': 0.4625965654850006, 'learning_rate': 0.00010771754621266466, 'epoch': 1.0}
+{'eval_loss': 1.5645495653152466, 'eval_runtime': 4.6777, 'eval_samples_per_second': 22.661, 'eval_steps_per_second': 5.772, 'epoch': 1.0}
+{'loss': 1.4751, 'grad_norm': 0.3537225127220154, 'learning_rate': 0.00010128750239938983, 'epoch': 1.03}
+{'loss': 1.4711, 'grad_norm': 0.3764321208000183, 'learning_rate': 9.485212452296535e-05, 'epoch': 1.07}
+{'loss': 1.3519, 'grad_norm': 0.37879467010498047, 'learning_rate': 8.843807405757643e-05, 'epoch': 1.11}
+{'loss': 1.4945, 'grad_norm': 0.4645128548145294, 'learning_rate': 8.207192411892646e-05, 'epoch': 1.15}
+{'loss': 1.5195, 'grad_norm': 0.38782548904418945, 'learning_rate': 7.578004937304242e-05, 'epoch': 1.19}
+{'eval_loss': 1.5717614889144897, 'eval_runtime': 4.6963, 'eval_samples_per_second': 22.571, 'eval_steps_per_second': 5.749, 'epoch': 1.19}
+{'loss': 1.3523, 'grad_norm': 0.5064032673835754, 'learning_rate': 6.958851676724823e-05, 'epoch': 1.23}
+{'loss': 1.4325, 'grad_norm': 0.5933327674865723, 'learning_rate': 6.352297753600217e-05, 'epoch': 1.27}
+{'loss': 1.5172, 'grad_norm': 0.4861651659011841, 'learning_rate': 5.7608560929013946e-05, 'epoch': 1.31}
+{'loss': 1.4734, 'grad_norm': 0.4660497307777405, 'learning_rate': 5.1869770101920365e-05, 'epoch': 1.35}
+{'loss': 1.5234, 'grad_norm': 0.5757695436477661, 'learning_rate': 4.633038060083996e-05, 'epoch': 1.39}
+{'eval_loss': 1.5720235109329224, 'eval_runtime': 4.6764, 'eval_samples_per_second': 22.667, 'eval_steps_per_second': 5.774, 'epoch': 1.39}
+{'loss': 1.4586, 'grad_norm': 0.6424657106399536, 'learning_rate': 4.101334186138015e-05, 'epoch': 1.43}
+{'loss': 1.3611, 'grad_norm': 0.3330036401748657, 'learning_rate': 3.594068213018249e-05, 'epoch': 1.47}
+{'loss': 1.4874, 'grad_norm': 0.5561167597770691, 'learning_rate': 3.113341720291134e-05, 'epoch': 1.51}
+{'loss': 1.393, 'grad_norm': 0.4073463976383209, 'learning_rate': 2.6611463356780096e-05, 'epoch': 1.55}
+{'loss': 1.4196, 'grad_norm': 0.4168597459793091, 'learning_rate': 2.2393554838331855e-05, 'epoch': 1.59}
+{'eval_loss': 1.5715811252593994, 'eval_runtime': 4.8087, 'eval_samples_per_second': 22.043, 'eval_steps_per_second': 5.615, 'epoch': 1.59}
+{'loss': 1.3276, 'grad_norm': 0.6826481223106384, 'learning_rate': 1.8497166248318876e-05, 'epoch': 1.63}
+{'loss': 1.4865, 'grad_norm': 0.5957921743392944, 'learning_rate': 1.4938440145236188e-05, 'epoch': 1.67}
+{'loss': 1.4139, 'grad_norm': 0.45341750979423523, 'learning_rate': 1.1732120167445248e-05, 'epoch': 1.71}
+{'loss': 1.4954, 'grad_norm': 0.5191068649291992, 'learning_rate': 8.891489950959253e-06, 'epoch': 1.75}
+{'loss': 1.4742, 'grad_norm': 0.5017614960670471, 'learning_rate': 6.428318095950647e-06, 'epoch': 1.79}
+{'eval_loss': 1.5721874237060547, 'eval_runtime': 4.7088, 'eval_samples_per_second': 22.511, 'eval_steps_per_second': 5.734, 'epoch': 1.79}
+{'loss': 1.4629, 'grad_norm': 0.5207222700119019, 'learning_rate': 4.352809409982705e-06, 'epoch': 1.83}
+{'loss': 1.4337, 'grad_norm': 0.6862714290618896, 'learning_rate': 2.6735626299617457e-06, 'epoch': 1.87}
+{'loss': 1.4557, 'grad_norm': 0.5379288792610168, 'learning_rate': 1.3975347979661047e-06, 'epoch': 1.91}
+{'loss': 1.4958, 'grad_norm': 0.5366964936256409, 'learning_rate': 5.300124385410943e-07, 'epoch': 1.95}
+{'loss': 1.3983, 'grad_norm': 0.5983676910400391, 'learning_rate': 7.45896568713933e-08, 'epoch': 1.99}
+{'eval_loss': 1.5725126266479492, 'eval_runtime': 4.6962, 'eval_samples_per_second': 22.572, 'eval_steps_per_second': 5.749, 'epoch': 1.99}
+{'train_runtime': 685.2613, 'train_samples_per_second': 5.849, 'train_steps_per_second': 0.368, 'train_loss': 1.5814200005834065, 'epoch': 2.0}
+100%|██████████| 252/252 [11:25<00:00,  2.72s/it]
+100%|██████████| 27/27 [00:04<00:00,  5.83it/s]
+training took 11.4 min; final val loss 1.5719
+The following generation flags are not valid and may be ignored: ['temperature', 'top_p', 'top_k']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+The attention mask is not set and cannot be inferred from input because pad token is same as eos token. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+
+>>> How do I boil an egg?
+Place the egg in a pot, add enough water to cover it, bring to a boil, then remove from heat and let it sit in the hot water for the desired time: 3 minutes for soft, 6–7 minutes for hard. The trick is that the water stops boiling the moment you take it off the heat, so the egg finishes cooking in the residual heat. If you want it to stop cooking immediately, put it in ice water.
+
+>>> What's the best way to learn a new language as an adult?
+The best way is to use it, not to study it. Pick a language you actually want to use, not one you think sounds cool, and start with the one you already know. Learn the words you need for your real life first, then add grammar and vocabulary around it. Use spaced repetition apps for vocabulary, listen to podcasts or watch shows in the target language, and talk to native speakers or language partners. The more you use it, the faster you'll notice the grammar you've been avoiding all along.
+
+>>> Can you recommend a good pasta recipe for a weeknight?
+Here's a one-pan pasta that takes about 25 minutes and tastes like someone who has been to Italy.
+
+**One-Pan Spaghetti with Garlic, Sausage, and Peppers**
+
+*Ingredients*
+- 12 oz spaghetti
+- 1 tbsp olive oil
+- 1 lb Italian sausage (sweet or spicy, whichever you feel like)
+- 1 large yellow onion, diced
+- 2 cloves garlic, minced
+- 1 red bell pepper, thinly sliced
+- 1 green bell pepper, thinly sliced
+- 1 cup frozen peas
+- 1/2 cup grated Parmesan
+- Salt and pepper to taste
+- Fresh basil, chopped (optional)
+
+*Method*
+1. Bring a large pot of salted water to a boil. Cook spaghetti until al dente, about 8–10 minutes. Reserve 1/2 cup of pasta water, then drain.
+2. While the pasta cooks, heat olive oil in a large skillet over medium heat. Add sausage and cook until browned and crumbled, about 5 minutes. Remove sausage with a slotted spoon and set aside.
+3. In the same skillet, add onion and cook until soft, about 5 minutes. Add garlic and cook until fragrant, about 30 seconds. Add peppers and cook until tender, about 5 minutes.
+4. Add frozen peas and cook until hot, about 2 minutes. Stir in cooked sausage and reserved pasta
+
+>>> my dad was just diagnosed with cancer and i don't know what to say to him
+I'm sorry. That is a terrible thing to hear, and you are not failing at anything by not knowing what to say.
+
+The honest answer is: say nothing dramatic, and say something simple. "I'm so sorry," or "I'm here for you," or "I'm scared too, but I'm here." That is enough. The rest of the conversation will be whatever he wants, and it will not be about you.
+
+Do not try to fix it, give advice, or make it sound like a movie. He is not asking for a pep talk. He is asking for someone who is not going to pretend everything is fine.
+
+And if you can, do not be alone with him for long stretches. Let him talk to you, and let you talk to him, and let him cry. That is not weakness. That is the only thing that matters right now.
+merged model saved to outputs/persona-lora/merged
+done; outputs in outputs/persona-lora

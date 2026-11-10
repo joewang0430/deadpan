@@ -1,0 +1,178 @@
+# Data pipeline configuration.
+# Every script takes --config (default: this file). Secrets live in .env, never here.
+
+paths:
+  data_dir: data            # prompts, tags and splits (steps 01-03)
+  gen_dir: data/gen         # teacher generations, judge scores, SFT files (steps 04-06)
+
+endpoints:
+  ollama:                   # local Ollama server, OpenAI-compatible API
+    base_url: http://localhost:11434/v1
+    api_key: ollama
+  openrouter:
+    base_url: https://openrouter.ai/api/v1
+    api_key_env: OPENROUTER_API_KEY
+  vllm:                     # vLLM on a rented GPU, serving the base model plus the LoRA adapter
+    base_url_env: VLLM_BASE_URL   # changes with every pod, so it lives in .env
+    api_key_env: VLLM_API_KEY
+
+# One entry per job an LLM does in the pipeline.
+# Keep the judge in a different model family from both the teacher and the student (Qwen).
+roles:
+  tagger:                   # labels topic / sensitivity / suitability (~$1 for all prompts)
+    endpoint: openrouter    # the local 4B model was too noisy for a trustworthy held-out split
+    model: deepseek/deepseek-v4.1-flash
+    temperature: 0.0
+    max_tokens: 120
+    concurrency: 16
+    extra_body: {reasoning: {effort: none}}
+  prompt_writer:            # writes the synthetic sensitive prompts (step 02b, a few cents)
+    endpoint: openrouter
+    model: deepseek/deepseek-v4-pro-0813
+    temperature: 1.0
+    max_tokens: 1200
+    concurrency: 8
+    extra_body: {reasoning: {effort: none}}
+  teacher:                  # writes persona replies that become training data
+    endpoint: openrouter
+    model: deepseek/deepseek-v4-pro-0813
+    temperature: 0.8
+    max_tokens: 900
+    concurrency: 16
+    extra_body: {reasoning: {effort: none}}
+  teacher_self:             # control: the student model itself, prompted with the persona
+    endpoint: ollama
+    model: qwen3:4b-instruct
+    temperature: 0.8
+    max_tokens: 900
+    concurrency: 4
+  user_sim:                 # plays the human in multi-turn conversations
+    endpoint: openrouter
+    model: deepseek/deepseek-v4.1-flash
+    temperature: 0.9
+    max_tokens: 150
+    concurrency: 16
+    extra_body: {reasoning: {effort: none}}
+  judge:                    # grades replies with prompts/judge.md
+    endpoint: openrouter
+    model: z-ai/glm-5.3     # reasoning is mandatory for this model; "low" keeps it cheap
+    temperature: 0.0
+    max_tokens: 2500
+    concurrency: 16
+    extra_body: {reasoning: {effort: low}}
+  judge2:                   # second opinion on the evaluation only: the training data was filtered by GLM,
+    endpoint: openrouter    # so a judge from another family checks that LoRA is not just pleasing GLM
+    model: anthropic/claude-haiku-5.5
+    temperature: 0.0
+    max_tokens: 2500
+    concurrency: 16
+    extra_body: {reasoning: {effort: low}}
+
+collect:
+  dataset: OpenAssistant/oasst2       # Apache-2.0, human-written prompts
+  min_chars: {en: 15, zh: 5}
+  max_chars: {en: 500, zh: 300}
+  blocked_labels: [spam, not_appropriate, hate_speech, sexual_content, pii, lang_mismatch]
+  blocked_label_threshold: 0.5
+
+topics:
+  tech_programming: software, coding, computers, the internet, AI, gadgets
+  science_math: physics, chemistry, biology, math, space, the environment
+  health_body: health, medicine, fitness, nutrition, sleep, everyday mental health
+  food_cooking: recipes, cooking, baking, drinks, restaurants
+  money_work: personal finance, business, careers, job hunting, economics
+  people_relationships: relationships, family, friends, social situations, etiquette, psychology
+  learning_language: studying, education, languages, grammar, writing help
+  travel_places: travel, geography, countries, cities, transportation
+  history_society: history, politics, law, religion, philosophy, culture
+  arts_entertainment: movies, music, books, games, sports, hobbies, creative writing
+  home_lifestyle: home, DIY, pets, gardening, cars, shopping, fashion, daily life
+  other: anything that fits none of the above
+
+split:
+  seed: 42
+  heldout_topics: [food_cooking, travel_places]   # never seen in training; tests generalization
+  test_seen: 150            # single-turn test prompts from training topics
+  test_unseen: 150          # single-turn test prompts from held-out topics
+  test_multiturn: 60        # seeds for multi-turn drift evaluation (half seen, half unseen)
+  test_zh: 120              # Chinese prompts for the optional cross-lingual test
+  test_sensitive: 50        # synthetic sensitive prompts: is the sarcasm dropped when it should be?
+  train_single: 1800        # single-turn generations (more than needed; the judge filters)
+  train_sensitive: 100      # synthetic sensitive prompts mixed into train_single (part of its 1800)
+  train_multi: 450          # multi-turn seeds
+
+# Synthetic sensitive prompts (step 02b). oasst2 has only ~40 usable sensitive prompts.
+# n is how many to request per category; about 190 requested for the 150 used above,
+# leaving room for near-duplicates.
+sensitive:
+  per_call: 5
+  categories:
+    bereavement:
+      topic: people_relationships
+      n: 30
+      description: someone close (a parent, partner, child, friend or grandparent) has died recently or is dying, including practical tasks after a death such as a funeral, a eulogy, telling children, or sorting out belongings
+    pet_loss:
+      topic: home_lifestyle
+      n: 15
+      description: a pet has died, is dying, or has to be put down
+    health_scare:
+      topic: health_body
+      n: 25
+      description: a frightening symptom, a serious diagnosis, waiting for test results, or a seriously ill family member
+    emergency:
+      topic: other
+      n: 25
+      description: something urgent is happening right now, such as a medical emergency, an injury, a fire, a gas smell, an accident, a missing child, or someone in danger
+    self_harm:
+      topic: health_body
+      n: 20
+      description: the person mentions thoughts of suicide or self-harm, or is worried that a friend or family member might hurt themselves
+    job_money:
+      topic: money_work
+      n: 20
+      description: just lost a job, cannot pay rent or bills, crushing debt, facing eviction, or a business collapsing
+    breakup:
+      topic: people_relationships
+      n: 20
+      description: a breakup, a divorce, infidelity, or being abandoned by a partner or a close friend
+    loneliness:
+      topic: people_relationships
+      n: 20
+      description: deep loneliness or isolation, feeling invisible or like a burden, homesickness, or having nobody to talk to
+    setback:
+      topic: other
+      n: 20
+      description: a crushing failure or rejection, such as failing an important exam, being rejected from every program or job, burnout, or a long-held plan falling apart
+
+generate:
+  multi_turns: [3, 5]       # inclusive range of assistant turns per training conversation
+  retries: 2                # extra attempts for prompts rejected by the judge (step 05b)
+
+filter:
+  min_style: 4              # required unless the context is sensitive
+  min_helpfulness: 4
+  val_fraction: 0.05
+
+pilot:
+  n_prompts: 20
+  # Round 1 (results/pilot/round1) also had moonshotai/kimi-k3, which often dropped the
+  # persona, and mistralai/mistral-large-4-0, which returned HTTP 400 on every request.
+  teachers:                 # compared side by side by scripts/pilot_teachers.py
+    - {model: deepseek/deepseek-v4-pro-0813, extra_body: {reasoning: {effort: none}}}
+    - {model: deepseek/deepseek-v4.1-flash, extra_body: {reasoning: {effort: none}}}
+    - {model: z-ai/glm-5.3, extra_body: {reasoning: {effort: low}}}
+
+eval:
+  dir: data/eval
+  # The three systems compared. All three run on the same vLLM server in bf16: "base" and
+  # "prompt" are the released model, "lora" is the adapter loaded on top of it.
+  systems:
+    base: {endpoint: vllm, model: qwen3-4b, system_prompt: false}
+    prompt: {endpoint: vllm, model: qwen3-4b, system_prompt: true}   # persona as the system prompt
+    lora: {endpoint: vllm, model: persona, system_prompt: false}
+  # Same sampling for every system: Qwen's recommended settings for the Instruct-2507 models.
+  # Greedy decoding hides the persona (a dry remark is rarely the single likeliest token).
+  sampling: {temperature: 0.7, top_p: 0.8, max_tokens: 3072, concurrency: 32, extra_body: {top_k: 20}}
+  multiturn_turns: 8        # assistant turns per drift conversation; training had 3 to 5
+  pivot_per_category: 6     # pivot conversations per sensitive category (9 categories)
+  judges: [judge, judge2]

@@ -1,0 +1,35 @@
+# Smoke test: same pipeline, but every role runs on the local Ollama model, on a
+# tiny slice of data, with outputs under data/smoke. Output quality is irrelevant;
+# this only checks that every step runs end to end without an API key.
+inherit: pipeline.yaml
+paths:
+  data_dir: data/smoke
+  gen_dir: data/smoke/gen
+roles:
+  tagger: {endpoint: ollama, model: qwen3:4b-instruct, temperature: 0.0, max_tokens: 120, concurrency: 4}
+  prompt_writer: {endpoint: ollama, model: qwen3:4b-instruct, temperature: 1.0, max_tokens: 800, concurrency: 4}
+  teacher: {endpoint: ollama, model: qwen3:4b-instruct, temperature: 0.8, max_tokens: 600, concurrency: 4}
+  user_sim: {endpoint: ollama, model: qwen3:4b-instruct, temperature: 0.9, max_tokens: 120, concurrency: 4}
+  judge: {endpoint: ollama, model: qwen3:4b-instruct, temperature: 0.0, max_tokens: 400, concurrency: 4}
+split:
+  seed: 42
+  heldout_topics: [food_cooking, travel_places]
+  test_seen: 4
+  test_unseen: 2
+  test_multiturn: 2
+  test_zh: 3
+  test_sensitive: 2
+  train_single: 4
+  train_sensitive: 1
+  train_multi: 2
+sensitive:
+  per_call: 3
+  categories:
+    bereavement: {topic: people_relationships, n: 3, description: someone close has died recently}
+    emergency: {topic: other, n: 3, description: something urgent is happening right now}
+generate:
+  multi_turns: [2, 3]
+pilot:
+  n_prompts: 2
+  teachers:
+    - {model: qwen3:4b-instruct, endpoint: ollama}

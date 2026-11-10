@@ -1,0 +1,4 @@
+# Installed on top of the RunPod PyTorch image, which already provides torch.
+transformers==4.57.1
+peft==0.17.1
+accelerate==1.10.1

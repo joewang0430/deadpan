@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Generated data and model artifacts (large, reproducible from scripts)
+data/
+outputs/
+*.gguf
+*.safetensors
+*.zip
+*.log
+
+# Editor and OS files
+.vscode/
+.idea/
+.claude/settings.local.json
+.DS_Store
+Thumbs.db
+
+# Personal notes, not part of the project
+docs/initial_thought.txt
+docs/suggestion_from_gpt.md
